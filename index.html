@@ -7,236 +7,352 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js?v=1"></script>
   <style>
     body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background: linear-gradient(to right, #e0f7fa, #e1f5fe);
-  color: #333;
-}
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(to right, #e0f7fa, #e1f5fe);
+      color: #333;
+    }
 
-h2 {
-  text-align: center;
-  color: #00796b;
-  margin-bottom: 30px;
-}
+    body.dark-mode {
+      background: #121212; /* Dark background */
+      color: #e0e0e0; /* Light text color */
+    }
 
-.life-summary-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  background: #ffffffcc;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  border-radius: 8px;
-  overflow: hidden;
-}
+    h2 {
+      text-align: center;
+      color: #00796b;
+      margin-bottom: 30px;
+    }
 
-.life-summary-table th, .life-summary-table td {
-  padding: 12px 15px;
-  border: 1px solid #ccc;
-  text-align: left;
-}
+    body.dark-mode h2 {
+      color: #80cbc4;
+    }
 
-.life-summary-table th {
-  background-color: #00796b;
-  color: #fff;
-  text-align: center;
-}
+    .life-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: #ffffffcc;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
 
-.life-summary-table tr:nth-child(even) {
-  background-color: #f1f8e9;
-}
+    body.dark-mode .life-summary-table {
+      background: #1e1e1e;
+      color: #e0e0e0;
+      border-color: #444;
+    }
 
-.life-summary-table tr:hover {
-  background-color: #c8e6c9;
-}
+    .life-summary-table th, .life-summary-table td {
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
 
-.tabs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 15px;
-  gap: 10px;
-}
+    body.dark-mode .life-summary-table th,
+    body.dark-mode .life-summary-table td {
+      border-color: #444;
+    }
 
-.tab {
-  padding: 10px 20px;
-  background: #b2ebf2;
-  border-radius: 25px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+    .life-summary-table th {
+      background-color: #00796b;
+      color: #fff;
+      text-align: center;
+    }
 
-.tab:hover {
-  background: #4dd0e1;
-  color: #fff;
-}
+    body.dark-mode .life-summary-table th {
+      background-color: #004d40;
+    }
 
-.tab.active {
-  background: #00796b;
-  color: #fff;
-  font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
+    .life-summary-table tr:nth-child(even) {
+      background-color: #f1f8e9;
+    }
 
-.tab-content {
-  display: none;
-  background: #ffffffee;
-  border-radius: 10px;
-  padding: 25px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-}
+    body.dark-mode .life-summary-table tr:nth-child(even) {
+      background: #252525;
+    }
 
-.tab-content.active {
-  display: block;
-}
+    .life-summary-table tr:hover {
+      background-color: #c8e6c9;
+    }
 
-input[type="file"] {
-  padding: 10px;
-  border: 2px dashed #80deea;
-  border-radius: 10px;
-  background-color: #e0f7fa;
-  transition: all 0.3s ease;
-}
+    body.dark-mode .life-summary-table tr:hover {
+      background: #444;
+    }
 
-input[type="file"]:hover {
-  background: #b2ebf2;
-  cursor: pointer;
-}
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 15px;
+      gap: 10px;
+    }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 20px;
-  table-layout: auto;
-}
+    body.dark-mode .tabs {
+      background: #1e1e1e;
+    }
 
-th, td {
-  padding: 12px 15px;
-  border: 1px solid #ccc;
-  text-align: left;
-}
+    .tab {
+      padding: 10px 20px;
+      background: #b2ebf2;
+      border-radius: 25px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-th {
-  background: #00796b;
-  color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  cursor: pointer;
-  user-select: none;
-}
+    body.dark-mode .tab {
+      background: #333;
+      color: #b3e5fc;
+    }
 
-th.sort-asc::after { content: " 🔼"; }
-th.sort-desc::after { content: " 🔽"; }
+    .tab:hover {
+      background: #4dd0e1;
+      color: #fff;
+    }
 
-tr:nth-child(even) {
-  background: #f1f8e9;
-}
+    body.dark-mode .tab:hover {
+      background: #004d40;
+    }
 
-tr:nth-child(odd) {
-  background: #e8f5e9;
-}
+    .tab.active {
+      background: #00796b;
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
 
-tr:hover {
-  background: #c8e6c9;
-  transition: background 0.2s ease;
-}
+    body.dark-mode .tab.active {
+      background: #00796b;
+      color: #fff;
+    }
 
-#summaryBox {
-  font-size: 1.1em;
-  margin-bottom: 15px;
-  background: #f1f8e9;
-  padding: 10px 15px;
-  border-left: 5px solid #4caf50;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
+    .tab-content {
+      display: none;
+      background: #ffffffee;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
 
-body.dark-mode {
-  background: #121212; /* Dark background */
-  color: #e0e0e0; /* Light text color */
-}
+    body.dark-mode .tab-content {
+      background: #1e1e1e;
+      border: 1px solid #333;
+    }
 
-body.dark-mode .tabs {
-  background: #1e1e1e;
-}
+    .tab-content.active {
+      display: block;
+    }
 
-body.dark-mode .tab {
-  background: #333;
-  color: #b3e5fc;
-}
+    input[type="file"] {
+      padding: 10px;
+      border: 2px dashed #80deea;
+      border-radius: 10px;
+      background-color: #e0f7fa;
+      transition: all 0.3s ease;
+    }
 
-body.dark-mode .tab.active {
-  background: #00796b;
-  color: #fff;
-}
+    body.dark-mode input[type="file"] {
+      background-color: #333;
+      color: #fff;
+      border-color: #555;
+    }
 
-body.dark-mode .tab:hover {
-  background: #004d40;
-}
+    input[type="file"]:hover {
+      background: #b2ebf2;
+      cursor: pointer;
+    }
 
-body.dark-mode .tab-content {
-  background: #1e1e1e;
-  border: 1px solid #333;
-}
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      table-layout: auto;
+    }
 
-body.dark-mode input[type="file"] {
-  background-color: #333;
-  color: #fff;
-  border-color: #555;
-}
+    body.dark-mode table {
+      background: #1e1e1e;
+      color: #e0e0e0;
+      border-color: #444;
+    }
 
-body.dark-mode table,
-body.dark-mode .life-summary-table {
-  background: #1e1e1e;
-  color: #e0e0e0;
-  border-color: #444;
-}
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
 
-body.dark-mode th {
-  background: #004d40;
-  color: #fff;
-  border-color: #444;
-}
+    body.dark-mode th,
+    body.dark-mode td {
+      border-color: #444;
+    }
 
-body.dark-mode th.sort-asc::after { content: " 🔼"; }
-body.dark-mode th.sort-desc::after { content: " 🔽"; }
+    th {
+      background: #00796b;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      cursor: pointer;
+      user-select: none;
+    }
 
-body.dark-mode tr:nth-child(even) {
-  background: #252525;
-}
+    body.dark-mode th {
+      background: #004d40;
+    }
 
-body.dark-mode tr:nth-child(odd) {
-  background: #2c2c2c;
-}
+    th.sort-asc::after { content: " 🔼"; }
+    th.sort-desc::after { content: " 🔽"; }
 
-body.dark-mode tr:hover {
-  background: #444;
-}
+    tr:nth-child(even) {
+      background: #f1f8e9;
+    }
 
-body.dark-mode #summaryBox {
-  background: #2c2c2c;
-  border-left-color: #4caf50;
-  color: #e0e0e0;
-}
+    body.dark-mode tr:nth-child(even) {
+      background: #252525;
+    }
 
-body.dark-mode h2 {
-  color: #80cbc4;
-}
+    tr:nth-child(odd) {
+      background: #e8f5e9;
+    }
 
-/* Optional: Additional styling for dark mode */
-body.dark-mode select,
-body.dark-mode button {
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #555;
-}
+    body.dark-mode tr:nth-child(odd) {
+      background: #2c2c2c;
+    }
 
-body.dark-mode ul#speciesList,
-body.dark-mode ul#countySpeciesList {
-  color: #e0e0e0;
-}
+    tr:hover {
+      background: #c8e6c9;
+      transition: background 0.2s ease;
+    }
+
+    body.dark-mode tr:hover {
+      background: #444;
+    }
+
+    #summaryBox {
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      background: #f1f8e9;
+      padding: 10px 15px;
+      border-left: 5px solid #4caf50;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    body.dark-mode #summaryBox {
+      background: #2c2c2c;
+      border-left-color: #4caf50;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode select,
+    body.dark-mode button {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    body.dark-mode ul#speciesList,
+    body.dark-mode ul#countySpeciesList,
+    body.dark-mode ul#monthNeedsSpeciesMissingList,
+    body.dark-mode ul#monthNeedsSpeciesSeenList,
+    body.dark-mode ul#monthNeedsSpeciesNotSeenList {
+      color: #e0e0e0;
+    }
+
+    /* Styles for the new Month Needs tab */
+    .month-needs-container {
+      display: flex;
+      flex-wrap: wrap; /* Allow wrapping on smaller screens */
+      gap: 30px;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .month-needs-section {
+      flex: 1; /* Distribute space equally */
+      min-width: 300px; /* Minimum width before wrapping */
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    body.dark-mode .month-needs-section {
+      background-color: #2a2a2a;
+      border-color: #444;
+    }
+
+    .month-needs-section h3 {
+      margin-top: 0;
+      color: #00796b;
+      text-align: center;
+    }
+
+    body.dark-mode .month-needs-section h3 {
+      color: #80cbc4;
+    }
+
+    .month-needs-section select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    body.dark-mode .month-needs-section select {
+      background-color: #3e3e3e;
+      color: #e0e0e0;
+      border-color: #555;
+    }
+
+    .month-needs-section ul {
+      list-style-type: none;
+      padding: 0;
+      columns: 2; /* Two columns for lists */
+      column-gap: 20px;
+      max-height: 400px; /* Limit height for scrollability */
+      overflow-y: auto; /* Add scrollbar if content overflows */
+      border: 1px solid #eee;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+
+    body.dark-mode .month-needs-section ul {
+      background-color: #1a1a1a;
+      border-color: #333;
+    }
+
+    .month-needs-section ul li {
+      padding: 5px 0;
+      border-bottom: 1px dashed #eee;
+    }
+
+    body.dark-mode .month-needs-section ul li {
+      border-bottom: 1px dashed #3a3a3a;
+    }
+
+    .month-needs-section ul li:last-child {
+      border-bottom: none;
+    }
+
+    #totalMonthsSpeciesCount {
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #004d40;
+    }
+
+    body.dark-mode #totalMonthsSpeciesCount {
+      color: #b2dfdb;
+    }
+
   </style>
 </head>
 <body>
@@ -252,16 +368,24 @@ body.dark-mode ul#countySpeciesList {
     <div class="tab" data-tab="bigmonth">Month Totals by Year</div>
 	<div class="tab" data-tab="life">Regional Life/Ticks</div>
 	<div class="tab" data-tab="speciesByYear">Species by Year</div>
+    <div class="tab" data-tab="monthNeeds">Month Needs</div> <!-- New Tab -->
   </div>
 
   <div id="upload" class="tab-content active">
-  <input type="file" id="csvFile" accept=".csv,.zip">
-  <button id="themeToggle" style="margin-left: 15px;">Switch to Dark Mode</button>
-  <p>Download your eBird data by logging into your eBird account. Go to My eBird...</p>
-  <p>The program should only take a second or two to run. Navigate through the tabs to see your data.</p>
-  <p>Beta version 0.3</p><br>
-  <p>Last updated August 7, 2025</p>
-</div>
+    <input type="file" id="csvFile" accept=".csv,.zip">
+    <button id="themeToggle" style="margin-left: 15px;">Switch to Dark Mode</button>
+    <p>Download your eBird data by logging into your eBird account. Go to My eBird. On the bottom left of the page you should see Download My Data.
+	Click the Submit button. You will get an email with a link. Click the link in the email and the data will be downloaded to your computer.
+	You can then upload the zip file or the extracted csv file to this program. <br><br>Click the Choose File button above and navigate to
+	your file on your computer to load it. The Michigan eBird Summary program will remove all non-Michigan data then process the remaining data.
+	</p><br>
+	
+	The program should only take a second or two to run. Navigate through the tabs to see your
+	data.
+	</p>
+	<p> Beta version 0.3</p><br>
+	<p> Last updated August 7, 2025<p>
+  </div>
 
   <div id="table" class="tab-content">
     <div id="summaryBox" style="font-weight: bold; margin-bottom: 15px;"></div>
@@ -363,9 +487,32 @@ body.dark-mode ul#countySpeciesList {
   <ul id="countySpeciesList" style="margin-top: 20px; columns: 3;"></ul>
 </div>
 
+<!-- New Month Needs Tab Content -->
+<div id="monthNeeds" class="tab-content">
+  <div id="totalMonthsSpeciesCount"></div>
+  <div class="month-needs-container">
+    <div class="month-needs-section">
+      <h3>Species Not Seen in Selected Month</h3>
+      <label for="monthNeedsMonthSelector">Select Month:</label>
+      <select id="monthNeedsMonthSelector"></select>
+      <ul id="monthNeedsSpeciesMissingList"></ul>
+    </div>
+    <div class="month-needs-section">
+      <h3>Months Seen / Not Seen for a Species</h3>
+      <label for="monthNeedsSpeciesSelector">Select Species:</label>
+      <select id="monthNeedsSpeciesSelector"></select>
+      <h4>Months Seen:</h4>
+      <ul id="monthNeedsSpeciesSeenList"></ul>
+      <h4>Months Not Seen:</h4>
+      <ul id="monthNeedsSpeciesNotSeenList"></ul>
+    </div>
+  </div>
+</div>
+<!-- End New Month Needs Tab Content -->
+
 
   <script>
- // Tab Switching
+    // Tab Switching
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -385,7 +532,8 @@ body.dark-mode ul#countySpeciesList {
       JSZip.loadAsync(evt.target.result).then(zip => {
         const csvFileName = Object.keys(zip.files).find(name => name.toLowerCase().endsWith("myebirddata.csv"));
         if (!csvFileName) {
-          alert("MyEBirdData.csv not found in ZIP file.");
+          // Changed alert to a modal message
+          showMessageBox("MyEBirdData.csv not found in ZIP file.");
           return;
         }
         zip.files[csvFileName].async("string").then(csvText => {
@@ -404,10 +552,44 @@ body.dark-mode ul#countySpeciesList {
 });
 
     let currentData = [];
+    // Data structures for Month Needs tab
+    let allUniqueSpecies = new Set();
+    let speciesByMonth = new Map(); // Map: monthIndex (0-11) -> Set<speciesName>
+    let monthsBySpecies = new Map(); // Map: speciesName -> Set<monthIndex (0-11)>
+
 	let lowerTicks = 0, upperTicks = 0, northernLowerTicks = 0, southernLowerTicks = 0;
     let saginawTicks = 0, detroitTicks = 0, capitolTicks = 0, keweenawTicks = 0;
 	let speciesSortMode = "taxo"; // "alpha" or "taxo"
 	let taxonomicOrderMap = {};
+
+  // Custom message box instead of alert
+  function showMessageBox(message) {
+    const messageBox = document.createElement('div');
+    messageBox.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 1000;
+      border-radius: 8px;
+      text-align: center;
+      font-family: sans-serif;
+      color: #333;
+    `;
+    messageBox.innerHTML = `
+      <p>${message}</p>
+      <button style="margin-top: 15px; padding: 10px 20px; border: none; background-color: #00796b; color: white; border-radius: 5px; cursor: pointer;">OK</button>
+    `;
+    document.body.appendChild(messageBox);
+
+    messageBox.querySelector('button').addEventListener('click', () => {
+      document.body.removeChild(messageBox);
+    });
+  }
   
  function parseDateStrict(dateStr) {
   if (!dateStr || typeof dateStr !== "string") return NaN;
@@ -735,7 +917,7 @@ document.getElementById("upperPeninsulaCount").innerText = upperSet.size.toLocal
 document.getElementById("northernLowerPeninsulaCount").innerText = northernLowerSet.size.toLocaleString();
 document.getElementById("southernLowerPeninsulaCount").innerText = southernLowerSet.size.toLocaleString();
 document.getElementById("saginawBayCount").innerText = saginawSet.size.toLocaleString();
-document.getElementById("detroitMetroCount").innerText = detroitSet.size.toLocaleString();
+document.getElementById("detroitMetroCount").innerText = detroitSet.toLocaleString();
 document.getElementById("capitolAreaCount").innerText = capitolSet.size.toLocaleString();
 document.getElementById("keweenawPeninsulaCount").innerText = keweenawSet.size.toLocaleString();
 document.getElementById("lowerPeninsulaTicks").innerText = lowerTicks.toLocaleString();
@@ -924,6 +1106,37 @@ function parseCsv(text) {
     return !common.includes("/") && !common.includes("sp.");
   });
 
+  // Clear previous data for month needs tab to ensure fresh data on re-upload
+  allUniqueSpecies.clear();
+  speciesByMonth.clear();
+  monthsBySpecies.clear();
+
+  // Populate data structures for Month Needs tab (allUniqueSpecies, speciesByMonth, monthsBySpecies)
+  filtered.forEach(row => {
+    const date = parseDateStrict(row["Date"]);
+    const speciesName = row["Common Name"];
+
+    if (!isNaN(date) && speciesName) {
+      // Add to the set of all unique species encountered
+      allUniqueSpecies.add(speciesName);
+
+      const monthIndex = date.getUTCMonth(); // Get month in UTC
+
+      // Populate speciesByMonth map: monthIndex -> Set<speciesName>
+      if (!speciesByMonth.has(monthIndex)) {
+        speciesByMonth.set(monthIndex, new Set());
+      }
+      speciesByMonth.get(monthIndex).add(speciesName);
+
+      // Populate monthsBySpecies map: speciesName -> Set<monthIndex>
+      if (!monthsBySpecies.has(speciesName)) {
+        monthsBySpecies.set(speciesName, new Set());
+      }
+      monthsBySpecies.get(speciesName).add(monthIndex);
+    }
+  });
+
+
   // 🛡 Optional: log invalid dates only within filtered rows
   filtered.forEach((row, i) => {
     const date = parseDateStrict(row["Date"]);
@@ -946,6 +1159,7 @@ function parseCsv(text) {
     count: names.size
   }));
 
+  // Render all the tables and lists
   renderTable(currentData);
   renderSummary(currentData);
   renderMonthlyTable(filtered);
@@ -954,10 +1168,142 @@ function parseCsv(text) {
   renderLifeTab(filtered);
   renderSpeciesByYear(filtered);
   renderSpeciesByCounty(filtered);
+  renderMonthNeedsTab(); // Call the function to render the new tab
 
   // Default behavior: sort by county, switch to County Totals tab
   document.querySelector('#resultTable th[data-key="county"]').click();
   document.querySelector('.tab[data-tab="table"]').click();
+}
+
+// --- New JavaScript functions for Month Needs tab ---
+function renderMonthNeedsTab() {
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  // Calculate the new "Total Species Seen in all 12 Months"
+  let speciesSeenInAll12MonthsCount = 0;
+  allUniqueSpecies.forEach(speciesName => {
+    const seenMonthsForSpecies = monthsBySpecies.get(speciesName);
+    // A species counts if it has been seen in all 12 unique months (0-11)
+    if (seenMonthsForSpecies && seenMonthsForSpecies.size === 12) {
+      speciesSeenInAll12MonthsCount++;
+    }
+  });
+
+  document.getElementById('totalMonthsSpeciesCount').textContent =
+    `Total Species Seen in all 12 Months: ${speciesSeenInAll12MonthsCount}`;
+
+  // Left Section: Species Not Seen in Selected Month
+  const monthSelector = document.getElementById('monthNeedsMonthSelector');
+  const speciesMissingList = document.getElementById('monthNeedsSpeciesMissingList');
+
+  monthSelector.innerHTML = '';
+  months.forEach((monthName, index) => {
+    const opt = document.createElement('option');
+    opt.value = index;
+    opt.textContent = monthName;
+    monthSelector.appendChild(opt);
+  });
+
+  function updateSpeciesMissingList() {
+    const selectedMonthIndex = parseInt(monthSelector.value);
+    const speciesSeenInMonth = speciesByMonth.get(selectedMonthIndex) || new Set();
+    
+    const missingSpecies = Array.from(allUniqueSpecies).filter(species => {
+      return !speciesSeenInMonth.has(species);
+    }).sort(); // Sort alphabetically
+
+    speciesMissingList.innerHTML = '';
+    if (missingSpecies.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = "All unique species seen in this month!";
+      speciesMissingList.appendChild(li);
+    } else {
+      missingSpecies.forEach(species => {
+        const li = document.createElement('li');
+        li.textContent = species;
+        speciesMissingList.appendChild(li);
+      });
+    }
+  }
+  
+  monthSelector.addEventListener('change', updateSpeciesMissingList);
+
+  // Right Section: Months Seen / Not Seen for a Species
+  const speciesSelector = document.getElementById('monthNeedsSpeciesSelector');
+  const speciesSeenList = document.getElementById('monthNeedsSpeciesSeenList');
+  const speciesNotSeenList = document.getElementById('monthNeedsSpeciesNotSeenList');
+
+  speciesSelector.innerHTML = '';
+  const sortedSpecies = Array.from(allUniqueSpecies).sort();
+  sortedSpecies.forEach(speciesName => {
+    const opt = document.createElement('option');
+    opt.value = speciesName;
+    opt.textContent = speciesName;
+    speciesSelector.appendChild(opt);
+  });
+
+  function updateSpeciesMonthCoverage() {
+    const selectedSpecies = speciesSelector.value;
+    const seenMonthsForSpecies = monthsBySpecies.get(selectedSpecies) || new Set();
+
+    speciesSeenList.innerHTML = '';
+    speciesNotSeenList.innerHTML = '';
+
+    const tempSeenMonths = [];
+    const tempNotSeenMonths = [];
+
+    months.forEach((monthName, index) => {
+      if (seenMonthsForSpecies.has(index)) {
+        tempSeenMonths.push(monthName);
+      } else {
+        tempNotSeenMonths.push(monthName);
+      }
+    });
+
+    if (tempSeenMonths.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = "Not seen in any month yet.";
+      speciesSeenList.appendChild(li);
+    } else {
+      tempSeenMonths.forEach(monthName => {
+        const li = document.createElement('li');
+        li.textContent = monthName;
+        speciesSeenList.appendChild(li);
+      });
+    }
+
+    if (tempNotSeenMonths.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = "Seen in all 12 months!";
+      speciesNotSeenList.appendChild(li);
+    } else {
+      tempNotSeenMonths.forEach(monthName => {
+        const li = document.createElement('li');
+        li.textContent = monthName;
+        speciesNotSeenList.appendChild(li);
+      });
+    }
+  }
+
+  speciesSelector.addEventListener('change', updateSpeciesMonthCoverage);
+
+  // Initial display for both sections
+  if (months.length > 0) {
+    monthSelector.value = 0; // Select January by default
+    updateSpeciesMissingList();
+  }
+  if (sortedSpecies.length > 0) {
+    speciesSelector.value = sortedSpecies[0]; // Select first species by default
+    updateSpeciesMonthCoverage();
+  } else {
+    // Handle case where no species data is loaded yet
+    speciesMissingList.innerHTML = '<li>Upload your eBird data to see results.</li>';
+    speciesSeenList.innerHTML = '<li>Upload your eBird data to see results.</li>';
+    speciesNotSeenList.innerHTML = '<li>Upload your eBird data to see results.</li>';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -985,7 +1331,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-
 
   </script>
   
