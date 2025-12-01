@@ -588,6 +588,53 @@
         100% { transform: rotate(360deg); }
     }
 
+    /* Style for the new County Month Totals table to handle many columns */
+    #countyMonthTotalsTable {
+        table-layout: fixed;
+    }
+
+    #countyMonthTotalsTable th, 
+    #countyMonthTotalsTable td {
+        white-space: nowrap;
+        text-align: center;
+        width: auto;
+    }
+    #countyMonthTotalsTable th:first-child,
+    #countyMonthTotalsTable td:first-child {
+        width: 15%; /* County name column */
+        text-align: left;
+        position: sticky;
+        left: 0;
+        background: #00796b;
+        z-index: 1;
+        box-shadow: 2px 0 2px rgba(0,0,0,0.1);
+    }
+    body.dark-mode #countyMonthTotalsTable th:first-child,
+    body.dark-mode #countyMonthTotalsTable td:first-child {
+        background: #004d40;
+    }
+    
+    /* Adjust sticky column background on hover for visibility */
+    #countyMonthTotalsTable tbody tr:hover td:first-child {
+        background: #c8e6c9 !important;
+    }
+    body.dark-mode #countyMonthTotalsTable tbody tr:hover td:first-child {
+        background: #444 !important;
+    }
+
+    .county-month-totals-container {
+        overflow-x: auto; /* Allow horizontal scrolling */
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+        background: #fff;
+    }
+    body.dark-mode .county-month-totals-container {
+        background: #1e1e1e;
+        border-color: #444;
+    }
+
+
   </style>
 </head>
 <body>
@@ -597,7 +644,7 @@
   <div class="tabs">
     <div class="tab active" data-tab="upload">Upload</div>
     <div class="tab" data-tab="table">County Totals</div>
-	<div class="tab" data-tab="countyChase">Seen All Counties</div>
+    <div class="tab" data-tab="countyMonthTotals">County Month Totals</div> <div class="tab" data-tab="countyChase">Seen All Counties</div>
     <div class="tab" data-tab="monthly">Monthly Totals</div>
     <div class="tab" data-tab="bigyear">Year Totals</div>
     <div class="tab" data-tab="bigmonth">Month Totals by Year</div>
@@ -613,8 +660,8 @@
 	Click the Submit button. You will get an email with a link. Click the link in the email and the data will be downloaded to your computer.  Navigate to the downloaded zip file and select it. 
 	The program should only take a second or two to run. Navigate through the tabs to see your processed Michigan data.</p>	
 	
-	<p> Version 1.0</p>
-	<p> Last updated August 15, 2025<p>
+	<p> Version 1.1</p>
+	<p> Last updated December 1, 2025<p>
     <p><a href="Readme.html" target="_blank">Click here for more information</a></p>
 </div>
 
@@ -649,7 +696,24 @@
    </div>
   </div>
   
-  <div id="countyChase" class="tab-content">
+<div id="countyMonthTotals" class="tab-content">
+    <h3 style="text-align: center; color: #00796b; margin-bottom: 20px;">Unique Species Count by County and Month (All Years)</h3>
+    <p style="text-align: center;">The numbers represent the **unique species count** seen in that **County** during that specific **Month** across all years of your eBird data.</p>
+    <div class="county-month-totals-container">
+        <table id="countyMonthTotalsTable">
+            <thead>
+                <tr>
+                    <th>County</th>
+                    <th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th>
+                    <th>May</th><th>Jun</th><th>Jul</th><th>Aug</th>
+                    <th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div id="countyChase" class="tab-content">
       <div class="county-chase-section">
         <h3 style="text-align: center; color: #00796b; margin: 20px 0;">Seen All Counties</h3>
 		<p style="text-align: center; margin: 0 15px 15px;"><b>***Hover over number to see missing counties for a species</b></p>
@@ -755,6 +819,7 @@
     <tbody></tbody>
   </table>
 </div>
+
 
 <div id="monthNeeds" class="tab-content">
   <div id="totalMonthsSpeciesCount"></div>
@@ -1042,6 +1107,53 @@ function renderBigMonthTable(data) {
   });
 }
 
+/**
+ * MODIFIED FUNCTION: Calculates and renders the Unique Species Count by County and Month.
+ * The Total column has been removed as requested.
+ */
+function renderCountyMonthTotalsTable(data) {
+    // Map: County -> MonthIndex -> Set of Species
+    const countyMonthSpeciesMap = new Map();
+    const countySet = new Set();
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    data.forEach(row => {
+        const county = row["County"];
+        const common = row["Common Name"];
+        const date = parseDateStrict(row["Date"]);
+
+        if (county && common && !isNaN(date) && !(date.getUTCFullYear() === 1900)) {
+            countySet.add(county);
+            const monthIndex = date.getUTCMonth();
+
+            if (!countyMonthSpeciesMap.has(county)) {
+                countyMonthSpeciesMap.set(county, Array.from({ length: 12 }, () => new Set()));
+            }
+            countyMonthSpeciesMap.get(county)[monthIndex].add(common);
+        }
+    });
+
+    const sortedCounties = Array.from(countySet).sort();
+    const tbody = document.querySelector('#countyMonthTotalsTable tbody');
+    tbody.innerHTML = '';
+
+    sortedCounties.forEach(county => {
+        const monthSets = countyMonthSpeciesMap.get(county) || Array.from({ length: 12 }, () => new Set());
+        const counts = monthSets.map(set => set.size);
+        
+        const tr = document.createElement('tr');
+        // The first column is the county name
+        let rowHTML = `<td>${county}</td>`; 
+        // The next 12 columns are the monthly unique species counts
+        rowHTML += counts.map(c => `<td>${c}</td>`).join(''); 
+        // The total column is omitted as requested.
+        
+        tr.innerHTML = rowHTML;
+        tbody.appendChild(tr);
+    });
+}
+
+
 function renderLifeTab(data) {
   const lowerPeninsulaCounties = new Set([
     "Alcona", "Allegan", "Alpena", "Antrim", "Arenac", "Barry", "Bay", "Benzie", "Berrien",
@@ -1104,8 +1216,7 @@ const keweenawPeninsulaCounties = new Set([
     "Kensington Metropark--Livingston Co. only",
     "Kensington Metropark--general (Oakland Co. only)",
     "Kensington Metropark--Dawson Rd. bridge",
-    "Kensington Metropark--Group Camp",
-	"Kensington Metropark--Farm Center",
+    "Kensington Metropark--Farm Center",
     "Lake Erie Metropark",
     "Lake Erie Metropark--Detroit River Hawk Watch",
     "Lake St. Clair Metropark (Metro Beach Metropark)",
@@ -1484,6 +1595,7 @@ function parseCsv(text) {
   renderMonthlyTable(filtered);
   renderBigYearTable(filtered);
   renderBigMonthTable(filtered);
+  renderCountyMonthTotalsTable(filtered);
   renderLifeTab(filtered);
   setupSpeciesByCounty(filtered);
   initializeClickListeners();
