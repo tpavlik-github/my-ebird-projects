@@ -599,28 +599,34 @@
         text-align: center;
         width: auto;
     }
-    #countyMonthTotalsTable th:first-child,
+    
+    #countyMonthTotalsTable th:first-child {
+        width: 15%; /* County name column */
+        text-align: left;
+        position: sticky;
+        left: 0;
+        background: #00796b; /* Header must maintain its background color */
+        z-index: 1;
+        box-shadow: 2px 0 2px rgba(0,0,0,0.1);
+    }
     #countyMonthTotalsTable td:first-child {
         width: 15%; /* County name column */
         text-align: left;
         position: sticky;
         left: 0;
-        background: #00796b;
+        font-weight: bold; /* Make county name bold */
+        /* background removed to inherit alternating row colors */
         z-index: 1;
         box-shadow: 2px 0 2px rgba(0,0,0,0.1);
     }
-    body.dark-mode #countyMonthTotalsTable th:first-child,
-    body.dark-mode #countyMonthTotalsTable td:first-child {
-        background: #004d40;
-    }
     
-    /* Adjust sticky column background on hover for visibility */
-    #countyMonthTotalsTable tbody tr:hover td:first-child {
-        background: #c8e6c9 !important;
+    body.dark-mode #countyMonthTotalsTable th:first-child {
+        background: #004d40; /* Dark mode header must maintain its background color */
     }
-    body.dark-mode #countyMonthTotalsTable tbody tr:hover td:first-child {
-        background: #444 !important;
-    }
+    /* Dark mode td:first-child background removed to inherit alternating row colors */
+    
+    /* Removed hover overrides so td:first-child inherits tr:hover color */
+
 
     .county-month-totals-container {
         overflow-x: auto; /* Allow horizontal scrolling */
@@ -660,8 +666,8 @@
 	Click the Submit button. You will get an email with a link. Click the link in the email and the data will be downloaded to your computer.  Navigate to the downloaded zip file and select it. 
 	The program should only take a second or two to run. Navigate through the tabs to see your processed Michigan data.</p>	
 	
-	<p> Version 1.1</p>
-	<p> Last updated December 1, 2025<p>
+	<p> Version 1.0</p>
+	<p> Last updated August 15, 2025<p>
     <p><a href="Readme.html" target="_blank">Click here for more information</a></p>
 </div>
 
