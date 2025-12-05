@@ -662,12 +662,14 @@
     <input type="file" id="csvFile" accept=".csv,.zip">
     <button id="themeToggle" style="margin-left: 15px;">Switch to Dark Mode</button>
     <div id="loader" class="loader" style="display: none; margin-top: 25px;"></div>
-    <p><a href="https://ebird.org/downloadMyData" target="_blank">Download your eBird data</a> by logging into your eBird account. The link should take you to the Download page.
-	Click the Submit button. You will get an email with a link. Click the link in the email and the data will be downloaded to your computer.  Navigate to the downloaded zip file and select it. 
+    <p><a href="https://ebird.org/downloadMyData" target="_blank">Download your eBird data</a> by logging into your eBird account. The link should take you to the Download page on eBird.
+	Click the Request My Observations button. Usually within a couple of minutes, you will get an email with a link. This is the same email address that is attached
+	to your eBird account.  Click the link in the email and the data will be downloaded to your computer (probably the Downloads folder).  Click the Choose File button above, 
+	navigate to the downloaded zip file on your computer and select it. 
 	The program should only take a second or two to run. Navigate through the tabs to see your processed Michigan data.</p>	
 	
-	<p> Version 1.0</p>
-	<p> Last updated August 15, 2025<p>
+	<p> Version 1.1</p>
+	<p> Last updated December 2025<p>
     <p><a href="Readme.html" target="_blank">Click here for more information</a></p>
 </div>
 
@@ -676,7 +678,11 @@
 	 <div id="summaryBox" style="font-weight: bold; margin-bottom: 15px; flex-basis: 100%;"></div>
 	 
         <div class="county-table-section county-box">
-		<h3 style="text-align: center; color: #00796b; margin-bottom: 20px;">County Totals</h3>
+		<h3 style="text-align: center; color: #00796b; margin-bottom: 20px;">
+			County Totals
+		<button id="countyTotalsExportCsv" style="margin-left:10px;">Export CSV</button>
+		</h3>
+
         <p><b>*Click a county to see its species list.     *Sort by clicking a heading.</b></p>
         <table id="resultTable">
               <thead>
@@ -1662,6 +1668,27 @@ function renderMonthNeedsTab() {
   if (months.length > 0) updateSpeciesMissingList();
   if (sortedSpecies.length > 0) updateSpeciesMonthCoverage();
 }
+
+// Export County Totals (County + Total)
+// Export County Totals (County + Total) - ALWAYS alphabetical by County
+document.getElementById('countyTotalsExportCsv').addEventListener('click', () => {
+    if (!currentData || currentData.length === 0) {
+        showMessageBox("No data available to export.");
+        return;
+    }
+
+    // Sort alphabetically by county name
+    const sortedData = [...currentData].sort((a, b) =>
+        a.county.localeCompare(b.county)
+    );
+
+    const headers = ["County", "Total"];
+    const rows = sortedData.map(row => [row.county, row.count]);
+
+    exportToCsv("MI-eBird-County-Totals.csv", headers, rows);
+});
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const themeToggleBtn = document.getElementById('themeToggle');
