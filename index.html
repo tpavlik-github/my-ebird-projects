@@ -837,7 +837,10 @@
   <div id="totalMonthsSpeciesCount"></div>
   <div class="month-needs-container">
     <div class="month-needs-section">
-      <h3>Species Not Seen in Selected Month</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0;">Species Not Seen in Selected Month</h3>
+        <button id="monthNeedsSortToggle">Sort: A &rarr; Z</button>
+      </div>
       <label for="monthNeedsMonthSelector">Select Month:</label>
       <select id="monthNeedsMonthSelector"></select>
       <ul id="monthNeedsSpeciesMissingList"></ul>
@@ -1632,27 +1635,61 @@ function parseCsv(text) {
 function renderMonthNeedsTab() {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   let speciesSeenInAll12MonthsCount = 0;
+  let missingSortMode = "taxo"; // Default to taxonomic
+
   allUniqueSpecies.forEach(s => { if (monthsBySpecies.get(s)?.size === 12) speciesSeenInAll12MonthsCount++; });
 
   document.getElementById('totalMonthsSpeciesCount').textContent = `Total Species Seen in all 12 Months: ${speciesSeenInAll12MonthsCount}`;
+  
   const monthSelector = document.getElementById('monthNeedsMonthSelector');
   monthSelector.innerHTML = months.map((m, i) => `<option value="${i}">${m}</option>`).join('');
 
   const speciesMissingList = document.getElementById('monthNeedsSpeciesMissingList');
+  const sortBtn = document.getElementById('monthNeedsSortToggle');
+
   function updateSpeciesMissingList() {
     const selectedMonthIndex = parseInt(monthSelector.value);
     const speciesSeenInMonth = speciesByMonth.get(selectedMonthIndex) || new Set();
-    const missingSpecies = Array.from(allUniqueSpecies).filter(s => !speciesSeenInMonth.has(s)).sort();
-    speciesMissingList.innerHTML = missingSpecies.length ? missingSpecies.map(s => `<li>${s}</li>`).join('') : "<li>All unique species seen in this month!</li>";
+    
+    // Filter to find missing species
+    let missingSpecies = Array.from(allUniqueSpecies).filter(s => !speciesSeenInMonth.has(s));
+
+    // Apply Sorting logic
+    missingSpecies.sort((a, b) => {
+      if (missingSortMode === "alpha") {
+        return a.localeCompare(b);
+      } else {
+        // Use the taxonomicOrderMap generated during CSV parsing
+        const rankA = taxonomicOrderMap[a] ?? 9999;
+        const rankB = taxonomicOrderMap[b] ?? 9999;
+        return rankA - rankB || a.localeCompare(b);
+      }
+    });
+
+    speciesMissingList.innerHTML = missingSpecies.length 
+      ? missingSpecies.map(s => `<li>${s}</li>`).join('') 
+      : "<li>All unique species seen in this month!</li>";
   }
+
+  // Toggle button event listener
+  sortBtn.addEventListener('click', () => {
+    // Toggle state
+    missingSortMode = (missingSortMode === "taxo") ? "alpha" : "taxo";
+    // Update button text to show the NEXT available action
+    sortBtn.textContent = `Sort: ${missingSortMode === "taxo" ? "A → Z" : "Taxonomic"}`;
+    updateSpeciesMissingList();
+  });
+
   monthSelector.addEventListener('change', updateSpeciesMissingList);
 
+  // Species Selector logic (Months Seen/Not Seen)
   const speciesSelector = document.getElementById('monthNeedsSpeciesSelector');
   const sortedSpecies = Array.from(allUniqueSpecies).sort();
   speciesSelector.innerHTML = sortedSpecies.map(s => `<option value="${s}">${s}</option>`).join('');
   
   const speciesSeenList = document.getElementById('monthNeedsSpeciesSeenList');
   const speciesNotSeenList = document.getElementById('monthNeedsSpeciesNotSeenList');
+
   function updateSpeciesMonthCoverage() {
     const seenMonths = monthsBySpecies.get(speciesSelector.value) || new Set();
     let seenHTML = '', notSeenHTML = '';
@@ -1663,8 +1700,10 @@ function renderMonthNeedsTab() {
     speciesSeenList.innerHTML = seenHTML || '<li>Not seen in any month yet.</li>';
     speciesNotSeenList.innerHTML = notSeenHTML || '<li>Seen in all 12 months!</li>';
   }
+  
   speciesSelector.addEventListener('change', updateSpeciesMonthCoverage);
 
+  // Initial render
   if (months.length > 0) updateSpeciesMissingList();
   if (sortedSpecies.length > 0) updateSpeciesMonthCoverage();
 }
