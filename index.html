@@ -710,6 +710,12 @@
   
 <div id="countyMonthTotals" class="tab-content">
     <h3 style="text-align: center; color: #00796b; margin-bottom: 20px;">Unique Species Count by County and Month (All Years)</h3>
+	<div id="countyMonthSummary"
+     style="text-align:center;
+            font-weight:bold;
+            margin-bottom:15px;
+            color:#004d40;">
+</div>
     <p style="text-align: center;">The numbers represent the **unique species count** seen in that **County** during that specific **Month** across all years of your eBird data.</p>
     <div class="county-month-totals-container">
         <table id="countyMonthTotalsTable">
@@ -1130,7 +1136,6 @@ function renderCountyMonthTotalsTable(data) {
     // Map: County -> MonthIndex -> Set of Species
     const countyMonthSpeciesMap = new Map();
     const countySet = new Set();
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     data.forEach(row => {
         const county = row["County"];
@@ -1142,30 +1147,50 @@ function renderCountyMonthTotalsTable(data) {
             const monthIndex = date.getUTCMonth();
 
             if (!countyMonthSpeciesMap.has(county)) {
-                countyMonthSpeciesMap.set(county, Array.from({ length: 12 }, () => new Set()));
+                countyMonthSpeciesMap.set(
+                    county,
+                    Array.from({ length: 12 }, () => new Set())
+                );
             }
+
             countyMonthSpeciesMap.get(county)[monthIndex].add(common);
         }
     });
 
     const sortedCounties = Array.from(countySet).sort();
+
     const tbody = document.querySelector('#countyMonthTotalsTable tbody');
     tbody.innerHTML = '';
 
+    let count50 = 0;
+    let count100 = 0;
+
     sortedCounties.forEach(county => {
-        const monthSets = countyMonthSpeciesMap.get(county) || Array.from({ length: 12 }, () => new Set());
+
+        const monthSets =
+            countyMonthSpeciesMap.get(county) ||
+            Array.from({ length: 12 }, () => new Set());
+
         const counts = monthSets.map(set => set.size);
-        
+
+        // Count county/month combinations meeting thresholds
+        counts.forEach(c => {
+            if (c >= 50) count50++;
+            if (c >= 100) count100++;
+        });
+
         const tr = document.createElement('tr');
-        // The first column is the county name
-        let rowHTML = `<td>${county}</td>`; 
-        // The next 12 columns are the monthly unique species counts
-        rowHTML += counts.map(c => `<td>${c}</td>`).join(''); 
-        // The total column is omitted as requested.
-        
+
+        let rowHTML = `<td>${county}</td>`;
+        rowHTML += counts.map(c => `<td>${c}</td>`).join('');
+
         tr.innerHTML = rowHTML;
         tbody.appendChild(tr);
     });
+
+    document.getElementById("countyMonthSummary").innerHTML =
+        `County/Months ≥ 100: ${count100.toLocaleString()} &nbsp;&nbsp;|&nbsp;&nbsp;
+         County/Months ≥ 50: ${count50.toLocaleString()}`;
 }
 
 
